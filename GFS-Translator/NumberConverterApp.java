@@ -12,15 +12,29 @@ public class NumberConverterApp extends JFrame {
         setTitle("Number Converter");
         setSize(400, 150);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new GridLayout(3, 2));
+
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.BOTH; // Fill both horizontally and vertically
 
         // Input
         inputField = new JTextField("0");
-        add(inputField);
+        setPlaceholder(inputField, "Input");
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        add(inputField, gbc);
 
         // Input Base Selector
         inputBaseSelector = new JComboBox<>(new String[] { "Decimal", "Binary", "Hexadecimal" });
-        add(inputBaseSelector);
+        gbc.weightx = 0.5;
+        gbc.weighty = 0.0;
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 1;
+        add(inputBaseSelector, gbc);
 
         inputBaseSelector.addItemListener(new ItemListener() {
             @Override
@@ -30,17 +44,33 @@ public class NumberConverterApp extends JFrame {
         });
 
         // Output
-        outputField = new JTextField("0");
+        outputField = new JTextField("");
+        setPlaceholder(inputField, "Output");
         outputField.setEditable(false);
-        add(outputField);
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        gbc.gridwidth = 1;
+        add(outputField, gbc);
 
         // Output Base Selector
         outputBaseSelector = new JComboBox<>(new String[] { "Decimal", "Binary", "Hexadecimal" });
-        add(outputBaseSelector);
+        gbc.weightx = 0.5;
+        gbc.weighty = 0.0;
+        gbc.gridx = 2;
+        gbc.gridy = 2;
+        gbc.gridwidth = 1;
+        add(outputBaseSelector, gbc);
 
         // Convert Button
         JButton convertButton = new JButton("Convert");
-        add(convertButton);
+        gbc.weightx = 1.0;
+        gbc.weighty = 0.0;
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 3; // Span 2 columns
+        add(convertButton, gbc);
 
         convertButton.addActionListener(new ActionListener() {
             @Override
@@ -73,6 +103,28 @@ public class NumberConverterApp extends JFrame {
         }
 
         return inputNumber;
+    }
+
+    private void setPlaceholder(JTextField textField, String placeholder) {
+        textField.setText(placeholder);
+        textField.setForeground(Color.GRAY);
+        textField.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (textField.getText().equals(placeholder)) {
+                    textField.setText("");
+                    textField.setForeground(Color.BLACK);
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (textField.getText().isEmpty()) {
+                    textField.setText(placeholder);
+                    textField.setForeground(Color.GRAY);
+                }
+            }
+        });
     }
 
     private void convertNumber() {
