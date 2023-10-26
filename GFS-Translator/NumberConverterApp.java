@@ -61,7 +61,7 @@ public class NumberConverterApp extends JFrame {
         }
     }
 
-    private void convertNumber() {
+    private String validateInput() {
         String inputNumber = inputField.getText();
 
         if (inputNumber.startsWith("0d")) {
@@ -72,18 +72,24 @@ public class NumberConverterApp extends JFrame {
             inputNumber = inputNumber.substring(2);
         }
 
+        return inputNumber;
+    }
+
+    private void convertNumber() {
+        String inputNumber = validateInput();
+
         String inputBase = (String) inputBaseSelector.getSelectedItem();
         String outputBase = (String) outputBaseSelector.getSelectedItem();
 
         try {
+            if (inputBase.equals("Decimal") && inputNumber.startsWith("-") && !outputBase.equals("Decimal")) {
+                throw new IllegalArgumentException("Number < 0");
+            }
             if (inputBase.equals("Decimal")) {
                 long decimalNumber = Long.parseLong(inputNumber);
                 if (outputBase.equals("Binary")) {
                     outputField.setText(Long.toBinaryString(decimalNumber));
                 } else if (outputBase.equals("Hexadecimal")) {
-                    if (decimalNumber < 16) {
-                        throw new IllegalArgumentException("ERROR! Input < 16");
-                    }
                     outputField.setText(Long.toHexString(decimalNumber).toUpperCase());
                 } else {
                     outputField.setText(inputNumber); // Output in Decimal
@@ -91,9 +97,7 @@ public class NumberConverterApp extends JFrame {
             } else if (inputBase.equals("Binary")) {
                 long decimalNumber = Long.parseLong(inputNumber, 2);
                 if (outputBase.equals("Decimal")) {
-                    if (decimalNumber < 16) {
-                        throw new IllegalArgumentException("ERROR! Input < 16");
-                    }
+
                     outputField.setText(Long.toString(decimalNumber).toUpperCase());
                 } else if (outputBase.equals("Hexadecimal")) {
                     outputField.setText(Long.toHexString(decimalNumber));
